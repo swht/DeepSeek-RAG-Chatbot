@@ -135,6 +135,10 @@ if prompt := st.chat_input("Ask about your documents..."):
             Answer:"""
         
         # Stream response
+        ollama_api_key = os.getenv("OLLAMA_API_KEY")
+        headers = {}
+        if ollama_api_key:
+            headers['Authorization'] = f'Bearer {ollama_api_key}'
         response = requests.post(
             OLLAMA_API_URL,
             json={
@@ -146,7 +150,8 @@ if prompt := st.chat_input("Ask about your documents..."):
                     "num_ctx": 4096
                 }
             },
-            stream=True
+            stream=True,
+            headers=headers
         )
         try:
             for line in response.iter_lines():
